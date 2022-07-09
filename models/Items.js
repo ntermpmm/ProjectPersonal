@@ -56,14 +56,14 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
     Items.associate = (models) => {
-        Items.belongsTo(models.Content, {
-            foreignKey: {
-                name: "contentId",
-                allowNull: false,
-            },
-            onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
-        });
+        // Items.belongsTo(models.Content, {
+        //     foreignKey: {
+        //         name: "contentId",
+        //         // allowNull: false,
+        //     },
+        //     onUpdate: "RESTRICT",
+        //     onDelete: "CASCADE",
+        // });
 
         Items.hasMany(models.Order, {
             foreignKey: {
@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
+            onDelete: "CASCADE",
         });
     };
     return Items;

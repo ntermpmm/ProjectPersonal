@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
+            onDelete: "CASCADE",
         });
     };
     return User;

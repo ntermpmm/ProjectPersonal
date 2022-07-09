@@ -1,5 +1,6 @@
 const { Step, Content } = require("../models");
 const createError = require("../utils/createError");
+const cloudinary = require("../utils/cloudinary");
 
 exports.getAllStep = async (req, res, next) => {
     try {
@@ -15,13 +16,22 @@ exports.getAllStep = async (req, res, next) => {
 
 exports.createStep = async (req, res, next) => {
     try {
-        const { image, description, contentId, stepOrder } = req.body;
+        const { description, contentId, stepOrder } = req.body;
+        console.log("termmmmm");
+        console.log(req.body);
+        let stepPhoto;
+        if (req.files) {
+            const result = await cloudinary.upload(req.files[0].path);
+            stepPhoto = result.secure_url;
+        }
+
         const step = await Step.create({
-            image,
+            image: stepPhoto,
             description,
             stepOrder,
             contentId,
         });
+        console.log(step);
         res.status(201).json({ step: step });
     } catch (err) {
         next(err);

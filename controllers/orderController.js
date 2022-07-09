@@ -1,5 +1,6 @@
 const { Order, Items, User } = require("../models");
 const createError = require("../utils/createError");
+const cloudinary = require("../utils/cloudinary");
 
 exports.getAllOrders = async (req, res, next) => {
     try {
@@ -42,21 +43,21 @@ exports.getOrderById = async (req, res, next) => {
 
 exports.createOrder = async (req, res, next) => {
     try {
-        const {
-            quantity,
-            slip,
-            status,
-            isDarft,
-            shippingStatus,
-            userId,
-            itemsId,
-        } = req.body;
+        const { userId, itemsId } = req.body;
+        let slip;
+        if (req.file) {
+            const result = await cloudinary.upload(req.file.path);
+            slip = result.secure_url;
+        }
+        console.log(slip);
+        console.log(userId);
+        console.log(itemsId);
         const order = await Order.create({
-            quantity,
+            quantity: "1",
             slip,
-            status,
-            isDarft,
-            shippingStatus,
+            status: "PAID",
+            isDarft: "1",
+            shippingStatus: "PROCESSING",
             userId,
             itemsId,
         });

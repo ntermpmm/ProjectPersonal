@@ -1,4 +1,8 @@
 const { User, Order, Items } = require("../models");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const createError = require("../utils/createError");
+const cloudinary = require("../utils/cloudinary");
 
 exports.getAllUser = async (req, res, next) => {
     try {
@@ -38,10 +42,16 @@ exports.updateUser = async (req, res, next) => {
             addresses,
             phoneNumber,
             dateOfBirth,
-            password,
-            profilePic,
+
             role,
         } = req.body;
+
+        let profilePic;
+        if (req.file) {
+            const result = await cloudinary.upload(req.file.path);
+            profilePic = result.secure_url;
+        }
+
         const result = await User.update(
             {
                 firstName,
@@ -51,16 +61,44 @@ exports.updateUser = async (req, res, next) => {
                 phoneNumber,
                 addresses,
                 dateOfBirth,
-                password,
                 profilePic,
                 role,
             },
             { where: { id } }
         );
+
         if (result[0] === 0) {
             createError("user with this id not found", 400);
         }
         res.json({ message: "update User success" });
+    } catch (err) {
+        next(err);
+    }
+};
+exports.updateUserPassword = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { oldPassword, password } = req.body;
+
+        const user = await User.findOne({
+            where: { id: id },
+        });
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            createError("password is incorrect", 400);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+        console.log(hashedPassword);
+        const result = await User.update(
+            {
+                password: hashedPassword,
+            },
+            { where: { id } }
+        );
+        // const token = genToken({ id: user.id });
+        res.status(200).json({ message: "Password Changed" });
     } catch (err) {
         next(err);
     }

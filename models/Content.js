@@ -48,21 +48,21 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
     Content.associate = (models) => {
-        Content.hasMany(models.Items, {
-            foreignKey: {
-                name: "contentId",
-                allowNull: false,
-            },
-            onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
-        });
+        // Content.hasMany(models.Items, {
+        //     foreignKey: {
+        //         name: "contentId",
+        //         // allowNull: false,
+        //     },
+        //     onUpdate: "RESTRICT",
+        //     onDelete: "CASCADE",
+        // });
         Content.hasMany(models.Step, {
             foreignKey: {
                 name: "contentId",
                 allowNull: false,
             },
             onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
+            onDelete: "CASCADE",
         });
         // Content.hasMany(models.ImageAlbum, {
         //     foreignKey: {

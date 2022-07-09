@@ -10,6 +10,9 @@ const itemRoute = require("./routes/itemRoute");
 const orderRoute = require("./routes/orderRoute");
 const authenticate = require("./middleware/authenticate");
 
+const notFoundMiddleware = require("./middleware/notFound");
+const errorMiddleware = require("./middleware/error");
+
 const app = express();
 app.use(cors());
 
@@ -26,6 +29,10 @@ app.use("/admin", userRouter);
 app.use("/contents", contentRoute);
 app.use("/items", itemRoute);
 app.use("/orders", orderRoute);
+
+// ## ROUTES
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
 
 const port = process.env.PORT || 8000;
 

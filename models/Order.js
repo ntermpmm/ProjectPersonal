@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
+            onDelete: "CASCADE",
         });
 
         Order.belongsTo(models.Items, {
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             onUpdate: "RESTRICT",
-            onDelete: "RESTRICT",
+            onDelete: "CASCADE",
         });
     };
     return Order;

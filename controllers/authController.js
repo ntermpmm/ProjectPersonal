@@ -68,6 +68,8 @@ exports.signup = async (req, res, next) => {
             email: isEmail ? emailOrPhone : null,
             phoneNumber: isMobilePhone ? emailOrPhone : null,
             password: hashedPassword,
+            role: "USER",
+            gender: "OTHER",
         });
 
         const token = genToken({ id: user.id });

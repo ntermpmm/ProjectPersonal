@@ -39,6 +39,10 @@ exports.getContentById = async (req, res, next) => {
 
 exports.createContents = async (req, res, next) => {
     try {
+        const user = req.user;
+        if (user.role !== "ADMIN") {
+            createError("you are not admin", 403);
+        }
         const {
             country,
             nameContent,
@@ -49,10 +53,13 @@ exports.createContents = async (req, res, next) => {
             type,
             howToTitle,
             howToDescription,
+            // steps,
         } = req.body;
         // console.log("logggg");
         // console.log("req.file");
         // console.log(req.file);
+        // const parse = JSON.parse(steps);
+        // console.log(parse);
         let mainPhoto;
         if (req.files) {
             const result = await cloudinary.upload(req.files[0].path);
@@ -80,26 +87,32 @@ exports.createContents = async (req, res, next) => {
         // let image = [];
         let countStep = 1;
         let stepFinal = [];
+        let indexDescription = 0;
+        let indexPhoto = 0;
+        console.log(stepDescription);
         if (req.files) {
             for (const file of req.files) {
-                if (file === req.files[0]) {
+                console.log(req.files);
+                if (indexPhoto > 0) {
                     const result = await cloudinary.upload(file.path);
                     // image = image = [
                     //     ...image,
                     //     { contentId: content.id, image: result.secure_url },
                     // ];
                     const step = await Step.create({
-                        description: stepDescription,
+                        description: stepDescription[indexDescription],
                         image: result.secure_url,
                         stepOrder: countStep,
                         contentId: content.id,
                     });
                     countStep++;
+                    indexDescription++;
                     stepFinal = [...stepFinal, step];
                 }
+                indexPhoto++;
             }
         }
-        step.forEach((element) => console.log(element));
+        // step.forEach((element) => console.log(element));
         // const test = JSON.parse(stepFinal);
         // console.log(test);
         res.status(201).json({ content: content });
